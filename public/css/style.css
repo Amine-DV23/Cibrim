@@ -419,8 +419,14 @@ textarea {
 .dropdown-content p {
     margin: 5px 0;
     background-color: #222;
+    max-width: 120px;
+
     padding: 8px;
     border-radius: 5px;
+}
+
+.dropdown-content p:hover {
+    background-color: #6d6c6c;
 }
 
 /*********************/
