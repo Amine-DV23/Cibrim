@@ -6,6 +6,8 @@
     --dark: #000000;
 }
 
+
+
 .back-to-top {
     position: fixed;
     display: none;
@@ -199,6 +201,11 @@
     border-radius: 40px;
 }
 
+.sidebar-toggler :hover {
+
+    transform: scale(1.5);
+}
+
 .content .navbar .dropdown-item {
     color: var(--light);
 }
@@ -344,6 +351,7 @@
 /**-------------------------------**/
 
 
+
 h1 {
     font-size: 2em;
     font-weight: bold;
@@ -452,9 +460,19 @@ textarea {
 }
 
 .add-button {
-    text-align: left;
-    margin: 10px 0;
+    text-align: center;
+    padding: 3px 3px;
     cursor: pointer;
+    background-color: #0930dfaf;
+    border-radius: 50%;
+    border: #6c9393 solid 1px;
+    width: 30px;
+    height: 30px;
+}
+
+.add-button:hover {
+    background-color: hwb(226 1% 2%);
+    transform: scale(1.1);
 }
 
 .add-button img {
@@ -482,4 +500,70 @@ textarea {
     width: 100px;
     padding: 5px;
     font-size: 12px;
+}
+
+/*//////////////////////////////////*/
+/* تنسيق الجدول ليغطي عرض الصفحة */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    color: #ffffff;
+    /* إضافة مسافة من الأعلى والأسفل */
+}
+
+/* تنسيق الخلايا داخل الجدول */
+th,
+td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+    /* إضافة حدود حول الخلايا */
+}
+
+/* تنسيق رؤوس الأعمدة */
+th {
+    background-color: #191C24;
+    font-weight: bold;
+}
+
+/* إضافة تباعد بين الأعمدة */
+td {
+    word-wrap: break-word;
+    /* جعل النص يلتف داخل الخلايا إذا كان طويلًا */
+}
+
+/* تنسيق الصفوف عند التمرير فوقها */
+tr:hover {
+    background-color: #a0a0a038;
+}
+
+/* تنسيق الرسالة (رسالة النجاح) */
+.message {
+    padding: 10px;
+    color: white;
+    text-align: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 5px;
+    z-index: 9999;
+}
+
+/* إضافة مساحة بين الجدول وأطراف الصفحة */
+.container {
+    margin: 0 20px;
+    /* 20px من اليمين واليسار */
+}
+
+/* التنسيق داخل الجدول لزيادة التباعد بين الأعمدة */
+th,
+td {
+    padding: 15px;
+}
+
+/* تنسيق الأعمدة لتكون النصوص منظمة في الوسط */
+td {
+    text-align: center;
 }

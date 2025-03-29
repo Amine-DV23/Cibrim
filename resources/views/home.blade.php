@@ -5,22 +5,22 @@
 
         <h1>Welcome to Order Management System</h1>
 
-        <!-- الخانات الرئيسية -->
+
         <div class="grid-container">
 
-            <a href="Clients" class="grid-item">
+            <a href="clients" class="grid-item">
                 <div class="icon">👥</div>
-                <div class="title">Add Clients</div>
+                <div class="title">Add Client</div>
                 <p class="description">Manage client information and their purchase history</p>
             </a>
-            <a href="order" class="grid-item">
+            <a href="orders" class="grid-item">
                 <div class="icon">📜</div>
-                <div class="title">Add Orders</div>
+                <div class="title">Add Order</div>
                 <p class="description">View all orders and update their statuses easily</p>
             </a>
             <a href="products" class="grid-item">
                 <div class="icon">📋</div>
-                <div class="title">Add Products</div>
+                <div class="title">Add Product</div>
                 <p class="description">Manage and update product information in the store</p>
             </a>
             <a href="home" class="grid-item">

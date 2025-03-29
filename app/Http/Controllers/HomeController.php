@@ -29,22 +29,4 @@ class HomeController extends Controller
          return view('home');
      }
 
-     public function index2()
-     {
-         return view('products');
-     }
-
-     public function index3()
-     {
-         return view('Clients');
-     }
-
-
-     public function index4()
-     {
-         return view('order');
-     }
-
-
-
 }

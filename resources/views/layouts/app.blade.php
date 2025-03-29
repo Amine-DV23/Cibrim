@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="utf-8">
+    <title>@yield('title', 'Cibrim')</title>
 
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
@@ -64,6 +65,16 @@
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
 
+    @if (Auth::guest())
+        <script>
+            $(document).ready(function() {
+                // Sidebar Toggler
+                $('.sidebar, .content').toggleClass("open");
+                return false;
+
+            });
+        </script>
+    @endif
 </body>
 
 </html>
