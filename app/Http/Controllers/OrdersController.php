@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Client;
 use App\Models\Product;
 use App\Models\Order;
+use Illuminate\Support\Str;
 
 class OrdersController extends Controller
 {
@@ -14,25 +15,22 @@ class OrdersController extends Controller
         $this->middleware('auth');
     }
 
-    // عرض الصفحة
     public function index()
     {
         $user = auth()->user();
 
+
+        $orders = Order::orderBy('order_group_id', 'asc')->get(); // ترتيب البيانات حسب رقم المجموعة
+
         $clients = Client::where('user_id', $user->id)->get();
         $products = Product::where('user_id', $user->id)->get();
-        $orders = Order::with('client', 'product')
-            ->whereHas('client', function ($q) use ($user) {
-                $q->where('user_id', $user->id);
-            })
-            ->latest()
-            ->get();
 
-        return view('orders', compact('clients', 'products', 'orders'));
+        return view('orders.orders', compact('clients', 'products', 'orders'));
     }
 
 
-    // جلب العملاء بصيغة JSON
+
+
     public function getClients()
     {
         $user = auth()->user();
@@ -46,29 +44,34 @@ class OrdersController extends Controller
     }
 
 
-    // تخزين الطلب
     public function store(Request $request)
     {
-        $client_id = $request->client_id;
-        $order_date = $request->order_date;
 
-        foreach ($request->orders as $orderItem) {
+        $lastGroupNumber = Order::max('order_group_id');
+
+
+        $newGroupNumber = $lastGroupNumber ? $lastGroupNumber + 1 : 1;
+
+
+        foreach ($request->orders as $order) {
             Order::create([
-                'client_id'   => $client_id,
-                'product_id'  => $orderItem['product_id'],
-                'quantity'    => $orderItem['quantity'],
-                'total_price' => $orderItem['total_price'],
-                'order_date'  => $order_date,
+                'order_group_id' => $newGroupNumber, // الرقم الجديد للمجموعة
+                'client_id' => $request->client_id,
+                'product_id' => $order['product_id'],
+                'quantity' => $order['quantity'],
+                'total_price' => $order['total_price'],
+                'order_date' => $request->order_date,
             ]);
         }
 
         return response()->json(['success' => true]);
     }
+
+
     public function update(Request $request, $id)
     {
         $order = Order::findOrFail($id);
 
-        // تحديث بيانات الطلب
         $order->update([
             'client_id'   => $request->client_id,
             'product_id'  => $request->orders[0]['product_id'], // نأخذ أول منتج فقط

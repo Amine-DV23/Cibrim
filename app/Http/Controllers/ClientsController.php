@@ -15,7 +15,7 @@ class ClientsController extends Controller
     public function index()
     {
         $clients = Client::where('user_id', auth()->id())->get();
-        return view('clients', compact('clients'));
+        return view('clients.clients', compact('clients'));
     }
 
     public function store(Request $request)

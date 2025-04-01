@@ -10,6 +10,7 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->string('order_group_id')->nullable(); // إضافة العمود
             $table->foreignId('client_id')->constrained()->onDelete('cascade'); // ارتباط مع جدول العملاء
             $table->foreignId('product_id')->constrained()->onDelete('cascade'); // ارتباط مع جدول المنتجات
             $table->date('order_date');

@@ -9,7 +9,8 @@ class Order extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['client_id', 'product_id', 'quantity', 'total_price', 'order_date'];
+    protected $fillable = ['order_group_id','client_id', 'product_id', 'quantity', 'total_price', 'order_date'];
+
 
     // العلاقة مع العميل
     public function client()

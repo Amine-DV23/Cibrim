@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container" style="display: flex; justify-content: center; padding: 50px 0;">
-        <div class="row justify-content-center" style="width: 100%; max-width: 500px;">
+    <div class="container" style="display: flex; justify-content: center; padding: 20px;">
+        <div class="row justify-content-center" style="width: 100%; max-width: 450px;">
             <div class="col-md-12">
                 <div class="card shadow-lg rounded-3">
                     <div class="card-header text-center" style="background-color: #4285F4; color: white; font-size: 1.5rem;">

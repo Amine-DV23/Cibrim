@@ -30,20 +30,27 @@
                         </a>
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                                <i class="fa fa-layer-group me-2"></i>Elements
+                                <i class="fa fa-layer-group me-2"></i>All - Elements
                             </a>
                             <div class="dropdown-menu bg-transparent border-0">
+                                <a href="/fournisseurs" class="dropdown-item">
+                                    <i class="fa fa-users me-2"></i>fournisseurs
+                                </a>
                                 <a href="/products" class="dropdown-item">
                                     <i class="fa fa-box me-2"></i>products
                                 </a>
                                 <a href="/clients" class="dropdown-item">
                                     <i class="fa fa-users me-2"></i>clients
                                 </a>
+
                                 <a href="/orders" class="dropdown-item">
                                     <i class="fa fa-shopping-cart me-2"></i>Orders
                                 </a>
                             </div>
                         </div>
+                        <a href="/fournisseurs" class="nav-item nav-link">
+                            <i class="fa fa-user me-2"></i>fournisseurs
+                        </a>
                         <a href="/products" class="nav-item nav-link">
                             <i class="fa fa-box me-2"></i>products
                         </a>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\ClientsController;
+use App\Http\Controllers\FournisseursController;
 use App\Http\Controllers\OrdersController;
 
 // مسارات إعادة تعيين كلمة المرور
@@ -41,6 +42,14 @@ Route::middleware('auth')->group(function () {
     Route::put('/clients/{id}', [ClientsController::class, 'update'])->name('clients.update');
     Route::delete('/clients/{id}', [ClientsController::class, 'destroy'])->name('clients.destroy');
     Route::get('/clients/{id}', [ClientsController::class, 'show'])->name('clients.show');
+
+
+    // المزود
+    Route::get('/fournisseurs', [FournisseursController::class, 'index'])->name('fournisseurs');
+    Route::post('/fournisseurs', [FournisseursController::class, 'store'])->name('fournisseurs.store');
+    Route::put('/fournisseurs/{id}', [FournisseursController::class, 'update'])->name('fournisseurs.update');
+    Route::delete('/fournisseurs/{id}', [FournisseursController::class, 'destroy'])->name('fournisseurs.destroy');
+    Route::get('/fournisseurs/{id}', [FournisseursController::class, 'show'])->name('fournisseurs.show');
 
     // الطلبات
     Route::get('/orders', [OrdersController::class, 'index'])->name('orders.index');
