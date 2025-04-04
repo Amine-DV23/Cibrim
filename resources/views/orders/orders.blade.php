@@ -52,7 +52,7 @@
         <h1>All Orders</h1>
         <br>
 
-        <div style="position: fixed; top: 30%; right: 40px; transform: translateY(-50%); text-align: center;">
+        <div class="pluss">
 
 
             <div style="font-weight: bold; color: #166beb; margin-bottom: 5px;">
@@ -60,8 +60,7 @@
             </div>
 
 
-            <a id="open-modal"
-                style="cursor: pointer; background-color: #191C24; padding: 6px 10px; border-radius: 50%; border: #166beb solid 1px; color: #166beb; display: inline-block;">
+            <a id="open-modal" class="pluss2">
                 <i class="fa fa-plus"></i>
             </a>
 

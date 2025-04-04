@@ -57,19 +57,94 @@ body {
 }
 
 .contnr01 {
-
     font-family: Arial, sans-serif;
     padding: 40px;
-    /* فرق عن الاطراف */
-
 }
 
-hr {
-    margin: 1rem 0;
-    color: inherit;
-    background-color: currentColor;
-    border: 0;
-    opacity: .25
+/* وضع الهاتف */
+@media (max-width: 468px) {
+    .contnr01 {
+        padding: 20px;
+        /* تقليل الهوامش لتناسب الشاشات الصغيرة */
+    }
+
+    .row {
+        display: flex;
+        flex-direction: column;
+        /* جعل العناصر عمودية بدلاً من أفقية */
+        gap: 10px;
+    }
+
+    select,
+    input {
+        width: 100%;
+        /* جعل جميع المدخلات تحتل العرض بالكامل */
+    }
+
+    .buttons {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .buttons button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    table {
+        width: 100%;
+        font-size: 8px;
+        /* تقليل حجم النص ليسهل عرضه */
+    }
+
+    table th,
+    table td {
+        padding: 5px;
+        /* تصغير التباعد بين الخلايا */
+    }
+
+    #open-modal {
+        right: 10px;
+        /* تعديل موقع زر الإضافة */
+        top: 20%;
+    }
+
+    .modal-overlay {
+        align-items: center;
+        justify-content: center;
+    }
+
+    .plusopen {
+        width: 90%;
+        padding: 15px;
+    }
+
+    .pluss {
+        top: 15%;
+    }
+
+    .pluss2 {
+        top: 15%;
+    }
+}
+
+.pluss {
+    position: absolute;
+    /* جعله يتحرك مع المحتوى */
+    right: 40px;
+    /* وضعه في منتصف الشاشة عند التحميل */
+    transform: translateY(-50%);
+    text-align: center;
+}
+
+.pluss2 {
+    cursor: pointer;
+    background-color: #191C24;
+    padding: 6px 10px;
+    border-radius: 50%;
+    border: #166beb solid 1px;
+    color: #166beb;
+    display: inline-block;
 }
 
 hr:not([size]) {
