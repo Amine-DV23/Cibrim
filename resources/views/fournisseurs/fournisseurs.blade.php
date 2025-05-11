@@ -4,9 +4,11 @@
     <div class="contnr01">
 
 
-        <div id="modal" class="modal-overlay">
-            <div class="plusopen">
-                <h1>Add New Fournisseur</h1>
+        <div id="modal" class="modal-overlay"
+            style="display: none; position: fixed; top: 5%; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5);">
+            <div class="plusopen"
+                style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);border-radius: 10px; background-color: #2b2b2b; padding: 20px; width: calc(100% - 200px); max-width: 600px;">
+                <h1>Add New fournisseur</h1>
 
                 <!-- Form -->
                 <form id="fournisseur-form">
@@ -31,40 +33,26 @@
                     </div>
 
                     <div class="buttons">
-                        <button type="submit" id="submit-btn">Add Fournisseur</button>
+                        <button type="submit" id="submit-btn">Add fournisseur</button>
                     </div>
                 </form>
-
 
                 <br>
             </div>
         </div>
 
-        <!-- Fournisseurs List -->
-        <h2>Fournisseurs List</h2>
-
+        <!-- fournisseurs List -->
+        <h2>fournisseurs List</h2>
         <br>
 
-
         <div class="pluss">
-
-
             <div style="font-weight: bold; color: #166beb; margin-bottom: 5px;">
-                Add-Fournis..
+                Add-fournisseur
             </div>
-
-
             <a id="open-modal" class="pluss2">
                 <i class="fa fa-plus"></i>
             </a>
-
         </div>
-
-
-        <form class="d-none d-md-flex ms-4">
-            <input style="max-width: 200px" class="form-control bg-dark border-0" type="search" id="search-box-fournisseur"
-                placeholder="Search by name..." onkeyup="filterFournisseurs()">
-        </form>
 
         <br>
 
@@ -84,55 +72,33 @@
                         <td class="phone">{{ $fournisseur->phone }}</td>
                         <td class="address">{{ $fournisseur->address }}</td>
                         <td>
-                            <button onclick="editFournisseur({{ $fournisseur->id }})"
-                                style="background-color: green;border-radius: 5px;">Edit</button>
-                            <button onclick="deleteFournisseur({{ $fournisseur->id }})"
-                                style="background-color: rgb(128, 4, 0);border-radius: 5px;">Delete</button>
+                            <button onclick="editfournisseur({{ $fournisseur->id }})" class="update-btn">Edit</button>
+                            <button onclick="deletefournisseur({{ $fournisseur->id }})" class="delete-btn">Delete</button>
                         </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
-        <!-- Message -->
-        <div id="message" style="display:none;" class="message"></div>
     </div>
 
-    <!-- jQuery -->
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        function filterFournisseurs() {
-            var searchTerm = document.getElementById('search-box-fournisseur').value.toLowerCase();
-            var rows = document.querySelectorAll('#fournisseurs-table tbody tr');
-
-            rows.forEach(function(row) {
-                var fournisseurName = row.cells[0].innerText.toLowerCase();
-                row.style.display = fournisseurName.startsWith(searchTerm) ? '' : 'none';
-            });
-        }
-
-
         $('#open-modal').click(function() {
-
             $('#fournisseur_id').val('');
             $('#name').val('');
             $('#phone').val('');
             $('#address').val('');
-            $('#submit-btn').text('Add Fournisseur');
-
-            $('#modal').addClass('modal-show');
+            $('#submit-btn').text('Add fournisseur');
+            $('#modal').css('display', 'block');
         });
-
-
 
 
         $('#modal').click(function(event) {
-
             if ($(event.target).is('#modal')) {
-                $('#modal').removeClass('modal-show');
+                $('#modal').css('display', 'none');
             }
         });
-
-
 
         $('#fournisseur-form').on('submit', function(e) {
             e.preventDefault();
@@ -140,39 +106,56 @@
             const url = id ? `/fournisseurs/${id}` : '/fournisseurs';
             const method = id ? 'PUT' : 'POST';
 
+            showSpinner();
+
             $.ajax({
                 url: url,
-                method: method,
+                method: 'POST',
                 data: {
                     _token: '{{ csrf_token() }}',
+                    _method: method,
                     name: $('#name').val(),
                     phone: $('#phone').val(),
                     address: $('#address').val()
                 },
                 success: function(response) {
-                    showMessage(response.message, 'green');
-                    if (response.status === 'success') {
-                        location.reload(); // تحديث الصفحة بعد إضافة أو تعديل المنتج
-                    }
+                    hideSpinner();
+                    showSuccessMessage();
+                    $('#modal').css('display', 'none');
+                    location.reload();
                 },
-                error: function() {
-                    alert('There was an error processing your request.');
+                error: function(xhr) {
+                    hideSpinner();
+                    showErrorMessage();
+                    let msg = 'An error occurred while saving';
+                    if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        msg = Object.values(xhr.responseJSON.errors).join('\n');
+                    }
+                    alert(msg);
                 }
             });
         });
 
-        function editFournisseur(id) {
+        function editfournisseur(id) {
+            showSpinner();
+
             $.get(`/fournisseurs/${id}`, function(data) {
+                hideSpinner();
                 $('#fournisseur_id').val(data.id);
                 $('#name').val(data.name);
                 $('#phone').val(data.phone);
                 $('#address').val(data.address);
-                $('#submit-btn').text('Update Fournisseur');
-                $('#modal').addClass('modal-show');
+                $('#submit-btn').text('Update fournisseur');
+                $('#modal').css('display', 'block');
+            }).fail(function() {
+                hideSpinner();
+                showErrorMessage();
             });
         }
 
-        function deleteFournisseur(id) {
+        function deletefournisseur(id) {
+            showSpinner();
+
             $.ajax({
                 url: '/fournisseurs/' + id,
                 type: 'DELETE',
@@ -180,25 +163,43 @@
                     _token: '{{ csrf_token() }}',
                 },
                 success: function(response) {
-                    $('#product-' + id).remove();
-                    showMessage('product deleted successfully!', 'red');
+                    hideSpinner();
+                    showSuccessMessage();
+                    $('#fournisseur-' + id).remove();
+                    alert('fournisseur deleted successfully!');
                     location.reload();
                 },
                 error: function() {
-                    showMessage('product deleted successfully!', 'red');
+                    hideSpinner();
+                    showErrorMessage();
+                    alert('Error while deleting');
                     location.reload();
                 }
             });
         }
-
-        function showMessage(message, color) {
-            var messageDiv = $('#message');
-            messageDiv.text(message);
-            messageDiv.css('background-color', color);
-            messageDiv.css('display', 'block');
-            setTimeout(function() {
-                messageDiv.fadeOut();
-            }, 3000);
-        }
     </script>
+    <style>
+        #modal input,
+        #modal textarea {
+            width: 100%;
+            font-size: 12px;
+            padding: 6px;
+            margin-bottom: 10px;
+        }
+
+        #modal label {
+            font-size: 12px;
+        }
+
+        #modal h1 {
+            font-size: 16px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        #submit-btn {
+            font-size: 12px;
+            padding: 6px 10px;
+        }
+    </style>
 @endsection

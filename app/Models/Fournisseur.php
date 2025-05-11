@@ -12,7 +12,6 @@ class Fournisseur extends Model
 
     protected $fillable = ['name', 'phone', 'address', 'user_id'];
 
-    // العلاقة مع الأوردرات
     public function orders()
     {
         return $this->hasMany(Order::class);

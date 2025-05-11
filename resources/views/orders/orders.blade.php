@@ -3,15 +3,19 @@
 @section('content')
     <div class="contnr01">
 
-        <div id="modal" class="modal-overlay">
-            <div class="plusopen">
+
+        <div id="modal" class="modal-overlay"
+            style=" display: none; position: fixed; top: 5%; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5);">
+            <div class="plusopen"
+                style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);border-radius: 10px; background-color: #2b2b2b; padding: 20px; width: calc(100% - 200px); max-width: 600px;">
                 <h1>Add New Order</h1>
 
                 <div class="row">
                     <select id="clientSelect">
                         <option value="">Select Client</option>
                         @foreach ($clients as $client)
-                            <option value="{{ $client->id }}" data-phone="{{ $client->phone }}">{{ $client->name }}</option>
+                            <option value="{{ $client->id }}" data-phone="{{ $client->phone }}">{{ $client->name }}
+                            </option>
                         @endforeach
                     </select>
                     <input type="date" id="currentDate" />
@@ -113,9 +117,8 @@
                         <td>{{ $order->quantity }}</td>
                         <td>{{ $order->total_price }}</td>
                         <td>
-                            <button class="editBtn" style="background-color: green;border-radius: 5px;">Edit</button>
-                            <button class="deleteBtn"
-                                style="background-color: rgb(128, 4, 0);border-radius: 5px;">Delete</button>
+                            <button class="update-btn">Edit</button>
+                            <button class="delete-btn">Delete</button>
                         </td>
                     </tr>
                 @endforeach
@@ -123,10 +126,8 @@
 
 
         </table>
-        <div id="message" style="display:none;" class="message"></div>
 
     </div>
-
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const modal = document.getElementById("modal");
@@ -134,30 +135,25 @@
             const submitOrderBtn = document.getElementById("submitOrderBtn");
             const editingOrderId = document.getElementById("editingOrderId");
 
-
             openModalBtn.addEventListener("click", function() {
                 modal.style.display = "flex";
-                editingOrderId.value = ""; // التأكد من أن الـ orderId فارغ عند إضافة طلب جديد
-                submitOrderBtn.innerText = "Add Order"; // إعادة النص إلى "Add Order"
+                editingOrderId.value = "";
+                submitOrderBtn.innerText = "Add Order";
 
-
-                document.getElementById('clientSelect').value = ""; // إعادة تعيين العميل
-                document.getElementById('clientPhone').value = ""; // إعادة تعيين الهاتف
-
+                document.getElementById('clientSelect').value = "";
+                document.getElementById('clientPhone').value = "";
 
                 document.querySelectorAll("#productRows .row").forEach(row => {
-                    row.querySelector(".productSelect").value = ""; // إعادة تعيين المنتج
-                    row.querySelector(".priceInput").value = ""; // إعادة تعيين السعر
-                    row.querySelector(".quantityInput").value = ""; // إعادة تعيين الكمية
-                    row.querySelector(".totalPriceInput").value = ""; // إعادة تعيين السعر الإجمالي
+                    row.querySelector(".productSelect").value = "";
+                    row.querySelector(".priceInput").value = "";
+                    row.querySelector(".quantityInput").value = "";
+                    row.querySelector(".totalPriceInput").value = "";
                 });
-
 
                 document.getElementById("orderTotalPrice").value = "0";
             });
 
-
-            document.querySelectorAll('.editBtn').forEach(btn => {
+            document.querySelectorAll('.update-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const row = this.closest('tr');
                     const orderId = row.dataset.orderId;
@@ -181,19 +177,18 @@
 
                     document.getElementById("orderTotalPrice").value = total;
 
-                    document.getElementById("submitOrderBtn").innerText =
-                        "Update Order";
+                    document.getElementById("submitOrderBtn").innerText = "Update Order";
                     document.getElementById("editingOrderId").value = orderId;
 
                     modal.style.display = "flex";
                 });
             });
 
-
             submitOrderBtn.addEventListener("click", function() {
+                hideSpinner();
                 modal.style.display = "none";
+                showSpinner();
             });
-
 
             modal.addEventListener("click", function(event) {
                 if (event.target === modal) {
@@ -201,7 +196,6 @@
                 }
             });
         });
-
 
         function addRow() {
             const productOptions = document.querySelector(".productSelect").innerHTML;
@@ -218,7 +212,6 @@
             setupRowEvents(row);
         }
 
-
         function setupRowEvents(row) {
             row.querySelector(".productSelect").addEventListener("change", function() {
                 const selected = this.options[this.selectedIndex];
@@ -232,14 +225,12 @@
             });
         }
 
-
         function calculateRow(row) {
             const price = parseFloat(row.querySelector(".priceInput").value) || 0;
             const quantity = parseFloat(row.querySelector(".quantityInput").value) || 0;
             row.querySelector(".totalPriceInput").value = (price * quantity).toFixed(2);
             updateTotalOrderPrice();
         }
-
 
         function updateTotalOrderPrice() {
             let total = 0;
@@ -248,9 +239,6 @@
             });
             document.getElementById("orderTotalPrice").value = total.toFixed(2);
         }
-
-
-
 
         document.getElementById("currentDate").valueAsDate = new Date();
 
@@ -259,51 +247,7 @@
             document.getElementById("clientPhone").value = selected.getAttribute("data-phone");
         });
 
-        function calculateRow(row) {
-            const price = parseFloat(row.querySelector(".priceInput").value) || 0;
-            const quantity = parseFloat(row.querySelector(".quantityInput").value) || 0;
-            row.querySelector(".totalPriceInput").value = (price * quantity).toFixed(2);
-            updateTotalOrderPrice();
-        }
-
-        function updateTotalOrderPrice() {
-            let total = 0;
-            document.querySelectorAll(".totalPriceInput").forEach(input => {
-                total += parseFloat(input.value) || 0;
-            });
-            document.getElementById("orderTotalPrice").value = total.toFixed(2);
-        }
-
-        function addRow() {
-            const productOptions = document.querySelector(".productSelect").innerHTML;
-            const row = document.createElement("div");
-            row.classList.add("row");
-            row.innerHTML = `
-            <select class="productSelect">${productOptions}</select>
-            <input type="number" placeholder="Price" class="priceInput" step="1" readonly />
-            <input type="number" placeholder="Quantity" class="quantityInput" step="1" />
-            <input type="number" placeholder="Total" class="totalPriceInput" readonly />
-        `;
-            document.getElementById("productRows").appendChild(row);
-
-            setupRowEvents(row);
-        }
-
-        function setupRowEvents(row) {
-            row.querySelector(".productSelect").addEventListener("change", function() {
-                const selected = this.options[this.selectedIndex];
-                const price = selected.getAttribute("data-price");
-                row.querySelector(".priceInput").value = price;
-                calculateRow(row);
-            });
-
-            row.querySelector(".quantityInput").addEventListener("input", function() {
-                calculateRow(row);
-            });
-        }
-
         document.querySelectorAll("#productRows .row").forEach(setupRowEvents);
-
 
         function submitOrder() {
             const client_id = document.getElementById("clientSelect").value;
@@ -348,20 +292,15 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
-                        showMessage("The operation was successful.", true);
+                        showSuccessMessage();
+
                         setTimeout(() => location.reload(), 1000);
                     } else {
-                        showMessage("The operation failed ", false);
+                        showErrorMessage();
                     }
                 })
                 .catch(() => showMessage("The operation failed   ", false));
-
         }
-
-
-
-
-
 
         let editing = false;
 
@@ -376,12 +315,10 @@
                 const total = row.dataset.total;
                 const date = row.dataset.date;
 
-
                 document.getElementById('clientSelect').value = clientId;
                 document.getElementById('currentDate').value = date;
                 document.getElementById('clientPhone').value = document.querySelector(
                     `#clientSelect option[value="${clientId}"]`)?.dataset.phone || '';
-
 
                 const firstRow = document.querySelector("#productRows .row");
                 firstRow.querySelector(".productSelect").value = productId;
@@ -391,10 +328,11 @@
 
                 document.getElementById("orderTotalPrice").value = total;
 
-
                 document.getElementById("submitOrderBtn").innerText = "Update Order";
                 document.getElementById("editingOrderId").value = orderId;
                 editing = true;
+
+                hideSpinner();
             });
         });
 
@@ -403,7 +341,7 @@
             let rows = document.querySelectorAll("#ordersTable tbody tr");
 
             rows.forEach(row => {
-                let clientName = row.cells[2].textContent.toLowerCase(); // اسم العميل في العمود الثالث
+                let clientName = row.cells[2].textContent.toLowerCase();
                 if (clientName.includes(input)) {
                     row.style.display = "";
                 } else {
@@ -412,13 +350,11 @@
             });
         }
 
-
-
-        document.querySelectorAll('.deleteBtn').forEach(btn => {
+        document.querySelectorAll('.delete-btn').forEach(btn => {
             btn.addEventListener('click', function() {
+                showSpinner();
                 const row = this.closest('tr');
                 const orderId = row.dataset.orderId;
-
 
                 fetch(`/orders/delete/${orderId}`, {
                         method: 'DELETE',
@@ -428,27 +364,31 @@
                     })
                     .then(res => res.json())
                     .then(data => {
+                        hideSpinner();
                         if (data.success) {
                             row.remove();
-                            showMessage("product deleted successfully", true);
+                            showSuccessMessage();
                         } else {
-                            showMessage("The operation failed ", false);
+                            showErrorMessage();
                         }
                     })
-                    .catch(() => showMessage(" The operation failed  ", false));
-
+                    .catch(() => {
+                        hideSpinner();
+                        showMessage("The operation failed", false);
+                    });
             });
         });
 
-        function showMessage(text, success = true) {
-            const messageDiv = document.getElementById("message");
-            messageDiv.textContent = text;
-            messageDiv.style.display = "block";
-            messageDiv.style.backgroundColor = success ? "rgba(40, 167, 69, 0.8)" : "rgba(220, 53, 69, 0.8)";
+        function showSpinner() {
 
-            setTimeout(() => {
-                messageDiv.style.display = "none";
-            }, 3000); // تخفي الرسالة بعد 3 ثواني
+            document.getElementById("spinner").style.display = "block";
+        }
+
+        function hideSpinner() {
+
+            setTimeout(function() {
+                document.getElementById("spinner").style.display = "none";
+            }, 1000);
         }
     </script>
 @endsection

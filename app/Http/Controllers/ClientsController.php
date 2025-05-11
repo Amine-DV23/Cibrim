@@ -7,16 +7,46 @@ use Illuminate\Http\Request;
 
 class ClientsController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
 
     public function index()
     {
-        $clients = Client::where('user_id', auth()->id())->get();
+        $clients = Client::all();
+        return response()->json($clients);
+    }
+    public function clientsPage()
+    {
+        $clients = Client::all();
         return view('clients.clients', compact('clients'));
     }
+
+    public function show($id)
+    {
+        $client = Client::findOrFail($id);
+        return response()->json($client);
+    }
+
+
+    public function store2(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'phone' => 'required|string|max:20',
+                'address' => 'required|string|max:255',
+                'user_id' => 'required|exists:users,id',
+            ]);
+
+            $client = Client::create($validated);
+            return response()->json($client, 201);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Validation Failed: ', $e->errors());
+            return response()->json(['errors' => $e->errors()], 422);
+        }
+
+
+    }
+
+
 
     public function store(Request $request)
     {
@@ -26,18 +56,14 @@ class ClientsController extends Controller
             'address' => 'required|string',
         ]);
 
-        Client::create([
+        $client = Client::create([
             'name' => $request->name,
             'phone' => $request->phone,
             'address' => $request->address,
             'user_id' => auth()->id(),
         ]);
 
-        if ($request->ajax()) {
-            return response()->json(['message' => 'Client added successfully!', 'status' => 'success']);
-        }
-
-        return redirect()->route('clients')->with('success', 'Client added successfully!');
+        return response()->json(['message' => 'Client added successfully!', 'client' => $client], 201);
     }
 
     public function update(Request $request, $id)
@@ -48,36 +74,21 @@ class ClientsController extends Controller
             'address' => 'required|string',
         ]);
 
-        $client = Client::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
-
+        $client = Client::findOrFail($id);
         $client->update([
             'name' => $request->name,
             'phone' => $request->phone,
             'address' => $request->address,
         ]);
 
-        if ($request->ajax()) {
-            return response()->json(['message' => 'Client updated successfully!', 'status' => 'success']);
-        }
-
-        return redirect()->route('clients')->with('success', 'Client updated successfully!');
+        return response()->json($client);
     }
 
     public function destroy($id)
     {
-        $client = Client::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+        $client = Client::findOrFail($id);
         $client->delete();
 
-        if (request()->ajax()) {
-            return response()->json(['message' => 'Client deleted successfully!', 'status' => 'success']);
-        }
-
-        return redirect()->route('clients')->with('success', 'Client deleted successfully!');
-    }
-
-    public function show($id)
-    {
-        $client = Client::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
-        return response()->json($client);
+        return response()->json(['message' => 'Client deleted successfully']);
     }
 }

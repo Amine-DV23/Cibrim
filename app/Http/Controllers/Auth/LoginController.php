@@ -45,12 +45,11 @@ class LoginController extends Controller
 
     public function logout(Request $request): RedirectResponse
     {
-        Auth::logout(); // تسجيل الخروج
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-        $request->session()->invalidate(); // إبطال الجلسة
-        $request->session()->regenerateToken(); // إنشاء توكن جديد للحماية
-
-        return redirect('/login'); // التوجيه إلى صفحة تسجيل الدخول
+        return redirect('/login');
     }
 
 

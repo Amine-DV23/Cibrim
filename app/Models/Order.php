@@ -12,13 +12,11 @@ class Order extends Model
     protected $fillable = ['order_group_id','client_id', 'product_id', 'quantity', 'total_price', 'order_date'];
 
 
-    // العلاقة مع العميل
     public function client()
     {
         return $this->belongsTo(Client::class);
     }
 
-    // العلاقة مع المنتج
     public function product()
     {
         return $this->belongsTo(Product::class);

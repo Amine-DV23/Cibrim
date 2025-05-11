@@ -1,23 +1,38 @@
 @auth
 
-
-    <!-- Footer Start -->
-    <div class="container-fluid pt-4 px-4">
-        <div class="bg-secondary rounded-top p-4">
-            <div class="row">
-                <div class="col-12 col-sm-6 text-center text-sm-start">
-                    &copy; <a href="#">Your Site Name</a>, All Right Reserved.
-                </div>
-                <div class="col-12 col-sm-6 text-center text-sm-end">
-                    <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-                    Designed By <a href="#">code</a>
-                </div>
+    <footer>
+        <div class="contact-info">
+            <p>
+                Email:
+                <a href="/messages/create" style="color: #1d41f2">
+                    esamine.8523@gmail.com </a>- phone :
+                <a style="color: #0b8f18"> +21271234567 / +21272123456</a> - About
+                <a href="/messages/privacy" style="color: #1d41f2"> Privacy </a>TermsTransparency Centre
+            </p>
+            <p>Connect with us on social media:</p>
+            <div class="social-media">
+                <a href="#">Facebook </a> | <a href="#"> Twitter </a> |
+                <a href="#">Instagram </a>
             </div>
         </div>
-    </div>
-    <!-- Footer End -->
 
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+        <div class="copyright">
+            <p>
+                <span style="color: #ff8800"> &copy; </span> 2024 All rights reserved
+                - 20670, Casablanca - Based on your past activity- Update location
+            </p>
+        </div>
+        <a href="#">
+            <div class="up">
+                <i class="fa-solid fa-angle-up"></i>
+            </div>
+        </a>
+        <a href="#">
+            <div class="up">
+                <i class="fa-solid fa-angle-up"></i>
+            </div>
+        </a>
+    </footer>
+
 
 @endauth

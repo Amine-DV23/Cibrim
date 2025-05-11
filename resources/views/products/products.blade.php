@@ -7,13 +7,13 @@
         <div id="modal" class="modal-overlay"
             style="display: none; position: fixed; top: 5%; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5);">
             <div class="plusopen"
-                style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #191C24; padding: 20px; width: calc(100% - 200px); max-width: 600px;">
+                style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);border-radius: 10px; background-color: #2b2b2b; padding: 20px; width: calc(100% - 200px); max-width: 600px;">
                 <h1>Manage Products</h1>
 
                 <!-- Form for adding a new product -->
                 <form id="product-form" action="{{ url('/products') }}" method="POST" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" id="product_id" name="product_id" /> <!-- حقل مخفي لـ product_id -->
+                    <input type="hidden" id="product_id" name="product_id" />
                     <div class="form-row">
                         <div>
                             <label for="name">Name:</label>
@@ -60,11 +60,7 @@
 
         </div>
 
-        <!-- Search Box -->
-        <form class="d-none d-md-flex ms-4">
-            <input style="max-width: 200px" class="form-control bg-dark border-0" type="search" id="search-box"
-                placeholder="Search by name..." onkeyup="filterProducts()" />
-        </form>
+
         <br>
 
         <table>
@@ -92,18 +88,15 @@
                         <td>{{ $product->description }}</td>
 
                         <td>
-                            <button style="background-color: green;border-radius: 5px;"
-                                onclick="editProduct({{ $product->id }})">Edit</button>
-                            <button style="background-color: rgb(128, 4, 0);border-radius: 5px;"
-                                onclick="deleteProduct({{ $product->id }})">Delete</button>
+                            <button class="update-btn" onclick="editProduct({{ $product->id }})">Edit</button>
+                            <button class="delete-btn" onclick="deleteProduct({{ $product->id }})">Delete</button>
                         </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
 
-        <!-- Message -->
-        <div id="message" style="display:none;" class="message"></div>
+
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -133,27 +126,6 @@
 
 
 
-            window.deleteProduct = function(id) {
-
-                $.ajax({
-                    url: '/products/' + id,
-                    type: 'DELETE',
-                    data: {
-                        _token: '{{ csrf_token() }}' // إرسال CSRF Token للحماية
-                    },
-                    success: function(response) {
-                        $('#product-' + id).remove();
-                        showMessage('product deleted successfully!', 'red');
-                        location.reload();
-                    },
-                    error: function() {
-                        showMessage('product deleted successfully!', 'red');
-                        location.reload();
-                    }
-                });
-            };
-
-
             window.editProduct = function(id) {
                 var row = document.getElementById('product-' + id);
                 var name = row.cells[1].innerText;
@@ -166,11 +138,11 @@
 
                 var form = document.getElementById('product-form');
                 form.action = '/products/' + id;
-                document.getElementById('submit-btn').innerText = 'Update Product'; // تغيير الزر إلى تحديث منتج
+                document.getElementById('submit-btn').innerText = 'Update Product';
                 form.method = 'POST';
 
 
-                $('#product_id').val(id); // تعيين الـ product_id
+                $('#product_id').val(id);
 
                 var methodInput = document.createElement('input');
                 methodInput.type = 'hidden';
@@ -182,20 +154,43 @@
                 $('#modal').fadeIn();
             };
 
+            window.deleteProduct = function(id) {
+                showSpinner();
+                $.ajax({
+                    url: '/products/' + id,
+                    type: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        $('#product-' + id).remove();
+                        showErrorMessage();
+                        location.reload();
+                    },
+                    error: function() {
+                        showErrorMessage();
+                        location.reload();
+                    },
+                    complete: function() {
+                        hideSpinner();
+                    }
+                });
+            };
+
+
 
             $(document).mouseup(function(e) {
-                var modalContent = $(".plusopen"); // العنصر الداخلي للنافذة
+                var modalContent = $(".plusopen");
                 if (!modalContent.is(e.target) && modalContent.has(e.target).length === 0) {
-                    $('#modal').fadeOut(); // إخفاء النافذة
+                    $('#modal').fadeOut();
                 }
             });
 
 
             $('#product-form').submit(function(e) {
                 e.preventDefault();
-
+                showSpinner();
                 var formData = new FormData(this);
-
                 $.ajax({
                     url: $(this).attr('action'),
                     type: $(this).attr('method'),
@@ -203,27 +198,22 @@
                     processData: false,
                     contentType: false,
                     success: function(response) {
-                        showMessage(response.message, 'green');
+                        showSuccessMessage();
                         if (response.status === 'success') {
-                            location.reload(); // تحديث الصفحة بعد إضافة أو تعديل المنتج
+                            location.reload();
                         }
                     },
                     error: function() {
                         alert('There was an error processing your request.');
+                    },
+                    complete: function() {
+                        hideSpinner();
                     }
                 });
             });
 
 
-            function showMessage(message, color) {
-                var messageDiv = $('#message');
-                messageDiv.text(message);
-                messageDiv.css('background-color', color);
-                messageDiv.css('display', 'block');
-                setTimeout(function() {
-                    messageDiv.fadeOut();
-                }, 3000);
-            }
+
 
 
 
@@ -242,11 +232,36 @@
 
 
                 if (productName.startsWith(searchTerm)) {
-                    row.style.display = ''; // Show row
+                    row.style.display = '';
                 } else {
-                    row.style.display = 'none'; // Hide row
+                    row.style.display = 'none';
                 }
             });
         }
     </script>
+    <script src="js/main.js"></script>
+    <style>
+        #modal input,
+        #modal textarea {
+            width: 100%;
+            font-size: 12px;
+            padding: 6px;
+            margin-bottom: 10px;
+        }
+
+        #modal label {
+            font-size: 12px;
+        }
+
+        #modal h1 {
+            font-size: 16px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        #submit-btn {
+            font-size: 12px;
+            padding: 6px 10px;
+        }
+    </style>
 @endsection

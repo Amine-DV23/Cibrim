@@ -20,7 +20,7 @@ class OrdersController extends Controller
         $user = auth()->user();
 
 
-        $orders = Order::orderBy('order_group_id', 'asc')->get(); // ترتيب البيانات حسب رقم المجموعة
+        $orders = Order::orderBy('order_group_id', 'asc')->get();
 
         $clients = Client::where('user_id', $user->id)->get();
         $products = Product::where('user_id', $user->id)->get();
@@ -55,7 +55,7 @@ class OrdersController extends Controller
 
         foreach ($request->orders as $order) {
             Order::create([
-                'order_group_id' => $newGroupNumber, // الرقم الجديد للمجموعة
+                'order_group_id' => $newGroupNumber,
                 'client_id' => $request->client_id,
                 'product_id' => $order['product_id'],
                 'quantity' => $order['quantity'],
@@ -74,7 +74,7 @@ class OrdersController extends Controller
 
         $order->update([
             'client_id'   => $request->client_id,
-            'product_id'  => $request->orders[0]['product_id'], // نأخذ أول منتج فقط
+            'product_id'  => $request->orders[0]['product_id'],
             'quantity'    => $request->orders[0]['quantity'],
             'total_price' => $request->orders[0]['total_price'],
             'order_date'  => $request->order_date,

@@ -11,12 +11,74 @@ class ProductsController extends Controller
     {
         $this->middleware('auth');
     }
+    public function productsPage()
+    {
+        $products = Product::all();
+        $products = Product::where('user_id', auth()->user()->id)->get();
+
+        return view('products.products', compact('products'));
+    }
+
+
 
     public function index()
     {
-        $products = Product::where('user_id', auth()->user()->id)->get();
-        return view('products.products', compact('products'));
+        return response()->json(Product::all());
     }
+
+    public function store2(Request $request)
+    {
+        try {
+
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'price' => 'required|numeric',
+                'description' => 'required|string',
+                'image' => 'nullable|image|mimes:jpg,png,jpeg,gif|max:2048',
+            ]);
+
+
+            $product = new Product();
+            $product->name = $request->name;
+            $product->price = $request->price;
+            $product->description = $request->description;
+            $product->user_id = auth()->user()->id;
+
+
+            if ($request->hasFile('image')) {
+                $imageName = time() . '.' . $request->image->extension();
+                $request->image->move(public_path('images'), $imageName);
+                $product->image = $imageName;
+            }
+
+
+            $product->save();
+
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'message' => 'Product added successfully!',
+                    'status' => 'success',
+                    'product' => $product,
+                ]);
+            }
+
+
+            return response()->json([
+                'message' => 'Product added successfully!',
+                'status' => 'success',
+                'product' => $product,
+            ], 201);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+
+            return response()->json(['errors' => $e->errors()], 422);
+        }
+    }
+
+
+
+
+
 
 
     public function store(Request $request)

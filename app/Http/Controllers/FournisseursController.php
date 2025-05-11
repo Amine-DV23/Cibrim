@@ -2,43 +2,74 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Fournisseur;
+use App\Models\fournisseur;
 use Illuminate\Http\Request;
 
 class FournisseursController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
 
     public function index()
     {
-        $fournisseurs = Fournisseur::where('user_id', auth()->id())->get();
+        $fournisseurs = fournisseur::all();
+        return response()->json($fournisseurs);
+    }
+
+    public function fournisseursPage()
+    {
+        $fournisseurs = Fournisseur::all();
         return view('fournisseurs.fournisseurs', compact('fournisseurs'));
     }
 
-    public function store(Request $request)
+
+    public function show($id)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:15',
-            'address' => 'required|string',
-        ]);
+        $fournisseur = fournisseur::findOrFail($id);
+        return response()->json($fournisseur);
+    }
 
-        Fournisseur::create([
-            'name' => $request->name,
-            'phone' => $request->phone,
-            'address' => $request->address,
-            'user_id' => auth()->id(),
-        ]);
 
-        if ($request->ajax()) {
-            return response()->json(['message' => 'Fournisseur added successfully!', 'status' => 'success']);
+
+
+
+    public function store2(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'phone' => 'required|string|max:20',
+                'address' => 'required|string|max:255',
+                'user_id' => 'required|exists:users,id',
+            ]);
+
+            $fournisseur = fournisseur::create($validated);
+            return response()->json($fournisseur, 201);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Validation Failed: ', $e->errors());
+            return response()->json(['errors' => $e->errors()], 422);
         }
 
-        return redirect()->route('fournisseurs')->with('success', 'Fournisseur added successfully!');
+
     }
+
+
+public function store(Request $request)
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'phone' => 'required|string|max:15',
+        'address' => 'required|string',
+    ]);
+
+    $fournisseur = fournisseur::create([
+        'name' => $request->name,
+        'phone' => $request->phone,
+        'address' => $request->address,
+        'user_id' => auth()->id(),
+    ]);
+
+    return response()->json($fournisseur, 201);
+}
+
 
     public function update(Request $request, $id)
     {
@@ -48,36 +79,21 @@ class FournisseursController extends Controller
             'address' => 'required|string',
         ]);
 
-        $fournisseur = Fournisseur::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
-
+        $fournisseur = fournisseur::findOrFail($id);
         $fournisseur->update([
             'name' => $request->name,
             'phone' => $request->phone,
             'address' => $request->address,
         ]);
 
-        if ($request->ajax()) {
-            return response()->json(['message' => 'Fournisseur updated successfully!', 'status' => 'success']);
-        }
-
-        return redirect()->route('fournisseurs')->with('success', 'Fournisseur updated successfully!');
+        return response()->json($fournisseur);
     }
 
     public function destroy($id)
     {
-        $fournisseur = Fournisseur::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+        $fournisseur = fournisseur::findOrFail($id);
         $fournisseur->delete();
 
-        if (request()->ajax()) {
-            return response()->json(['message' => 'Fournisseur deleted successfully!', 'status' => 'success']);
-        }
-
-        return redirect()->route('fournisseurs')->with('success', 'Fournisseur deleted successfully!');
-    }
-
-    public function show($id)
-    {
-        $fournisseur = Fournisseur::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
-        return response()->json($fournisseur);
+        return response()->json(['message' => 'fournisseur deleted successfully']);
     }
 }

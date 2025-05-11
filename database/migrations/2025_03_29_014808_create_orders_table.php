@@ -10,9 +10,9 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->string('order_group_id')->nullable(); // إضافة العمود
-            $table->foreignId('client_id')->constrained()->onDelete('cascade'); // ارتباط مع جدول العملاء
-            $table->foreignId('product_id')->constrained()->onDelete('cascade'); // ارتباط مع جدول المنتجات
+            $table->string('order_group_id')->nullable();
+            $table->foreignId('client_id')->constrained()->onDelete('cascade');
+            $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->date('order_date');
             $table->decimal('total_price', 10, 2);
             $table->integer('quantity');
